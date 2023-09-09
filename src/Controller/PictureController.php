@@ -2,55 +2,23 @@
 
 namespace App\Controller;
 
-use App\Entity\Bookmark;
-use App\Entity\Picture;
-use DateTime;
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Services\PictureServices;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Embed\Embed;
 
 class PictureController extends AbstractController
 {
-    #[Route('/add-picture/{link}', name: 'add_picture')]
-    public function addPicture(Request $request, EntityManagerInterface $emi): JsonResponse
+    #[Route('/add-picture', name: 'add_picture', methods: 'POST')]
+    public function addPicture(Request $request, PictureServices $pictureServices): JsonResponse
     {
         $link = $request->get("link");
-        $link = "https://www.flickr.com/photos/126579629@N06/40770662832/";
+        // $link = "https://www.flickr.com/photos/126579629@N06/40770662832/";
 
-        $embed = new Embed();
-        //Load any url:
-        $info = $embed->get($link);
+        $array = $pictureServices->add($link);
 
-        $picture = new Picture();
-        $picture->setHeight($info->code->height);
-        $picture->setWidth($info->code->width);
-
-        $bookmark = new Bookmark();
-        $bookmark->setLink($link);
-        $bookmark->setTitle($info->title);
-        $bookmark->setAuthor($info->authorName);
-        $bookmark->setCreatedAt(new DateTimeImmutable());
-        $bookmark->setPicture($picture);
-
-
-        $emi->persist($picture);
-        $emi->persist($bookmark);
-        $emi->flush();
-
-        return $this->json([
-            '200' => 'success',
-            'link' => $bookmark->getLink(),
-            'title' => $bookmark->getTitle(),
-            'author' => $bookmark->getAuthor(),
-            'createdAt' => $bookmark->getCreatedAt(),
-            'height' => $bookmark->getPicture()->getHeight(),
-            'width' => $bookmark->getPicture()->getWidth(),
-        ]);
+        return $this->json($array);
     }
 
     #[Route('/pictures', name: 'list_pictures')]
