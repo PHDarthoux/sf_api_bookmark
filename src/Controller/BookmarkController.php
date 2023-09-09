@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Repository\BookmarkRepository;
+use App\Services\BookmarkServices;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BookmarkController extends AbstractController
@@ -13,31 +17,56 @@ class BookmarkController extends AbstractController
     {
         return $this->json([
             'message' => 'Welcome to your Bookmark API!',
-            'all bookmark' => '/bookmark/all',
-            'pictures' => [
-                'add' => '/add-picture/{link}',
-                'list' => '/pictures',
-                'read' => '/picture/{id}',
-                'update' => '/update-picture/{id}',
-                'delete' => '/delete-picture/{id}',
-            ],
-            'movie' => [
-                'add' => '/add-movie/{link}',
-                'list' => '/movies',
-                'read' => '/movie/{id}',
-                'update' => '/update-movie/{id}',
-                'delete' => '/delete-movie/{id}',
-            ],
+            'add bookmark' => '/add-bookmark',
+            'list bookmarks' => '/bookmarks',
+            'read' => '/bookmark/{id}',
+            'delete' => '/delete-bookmark/{id}',
         ]);
     }
     
-    #[Route('/bookmark/all', name: 'app_bookmark_all')]
-    public function allBookmark(): JsonResponse
+    #[Route('/add-bookmark', name: 'add_bookmark', methods: 'POST')]
+    public function addPicture(Request $request, BookmarkServices $bookmarkServices): JsonResponse
     {
-        $datas = [];
-        //TODO
+        $link = $request->get("link");
+        $array = $bookmarkServices->add($link);
+
+        return $this->json($array);
+    }
+
+    #[Route('/bookmarks', name: 'list_bookmarks', methods: 'GET')]
+    public function allBookmarks(BookmarkServices $bookmarkServices): JsonResponse
+    {
+        $array = $bookmarkServices->getAll();
+
+        return $this->json($array);
+    }
+
+    #[Route('/bookmark/{id}', name: 'read_bookmark', methods: 'GET')]
+    public function getOneBookmark(Request $request, BookmarkServices $bookmarkServices): JsonResponse
+    {
+        $id = $request->get("id");
+        $datas = $bookmarkServices->getOneById($id);
 
         return $this->json($datas);
     }
 
+    #[Route('/delete-bookmark/{id}', name: 'delete_bookmark', methods: 'POST')]
+    public function deleteOneBookmark(
+        Request $request,
+        BookmarkRepository $bookmarkRepository,
+        EntityManagerInterface $emi
+        ): JsonResponse
+    {
+        $id = $request->get("id");
+        $boomark = $bookmarkRepository->find($id);
+
+        if ($boomark === null) {
+            return $this->json(['404' => "Boomark not found"]);
+        } 
+
+        $emi->remove($boomark);
+        $emi->flush();
+
+        return $this->json(['Bookmark Deleted' => $boomark->getLink()]);
+    }
 }

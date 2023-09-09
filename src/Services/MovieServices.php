@@ -3,49 +3,53 @@
 namespace App\Services;
 
 use App\Entity\Bookmark;
-use App\Entity\Picture;
-use App\Repository\PictureRepository;
+use App\Entity\Movie;
+use App\Repository\MovieRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Embed\Embed;
 
-class PictureServices
+class MovieServices
 {
     public function __construct(
         private EntityManagerInterface $emi,
-        private PictureRepository $pictureRepository,
-    ){
+        private MovieRepository $movieRepository,
+    ) {
     }
 
-    public function addPicture($link) : ?array {
+    public function addMovie($link): ?array
+    {
         $embed = new Embed();
         //Load any url:
         $info = $embed->get($link);
 
-        $picture = new Picture();
-        $picture->setHeight($info->code->height);
-        $picture->setWidth($info->code->width);
+        $movie = new Movie();
+        $movie->setHeight($info->code->height);
+        $movie->setWidth($info->code->width);
+        // $movie->setDuration($info->duration); // TODO
 
         $bookmark = new Bookmark();
         $bookmark->setLink($link);
         $bookmark->setTitle($info->title);
-        $bookmark->setAuthor($info->authorName);
+        
+        $info->authorName != null ? $bookmark->setAuthor($info->authorName) : $bookmark->setAuthor("no author specified");
         $bookmark->setCreatedAt(new DateTimeImmutable());
-        $bookmark->setPicture($picture);
+        $bookmark->setMovie($movie);
 
 
-        $this->emi->persist($picture);
+        $this->emi->persist($movie);
         $this->emi->persist($bookmark);
         $this->emi->flush();
 
-        $array =[
+        $array = [
             '200' => 'success',
             'link' => $bookmark->getLink(),
             'title' => $bookmark->getTitle(),
             'author' => $bookmark->getAuthor(),
             'createdAt' => $bookmark->getCreatedAt(),
-            'height' => $bookmark->getPicture()->getHeight(),
-            'width' => $bookmark->getPicture()->getWidth(),
+            'height' => $bookmark->getMovie()->getHeight(),
+            'width' => $bookmark->getMovie()->getWidth(),
+            'duration' => $bookmark->getMovie()->getDuration(),
         ];
 
         return $array;

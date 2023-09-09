@@ -25,6 +25,7 @@ class Bookmark
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    // fetch: 'EAGER'
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Picture $picture = null;
 

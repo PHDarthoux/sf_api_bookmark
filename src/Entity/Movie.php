@@ -20,7 +20,7 @@ class Movie
     private ?int $width = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $duration = null;
+    private ?string $duration = "Pas de durée définie";
 
     public function getId(): ?int
     {
