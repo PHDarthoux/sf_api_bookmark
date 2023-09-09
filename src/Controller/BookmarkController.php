@@ -18,12 +18,14 @@ class BookmarkController extends AbstractController
                 'add' => '/add-picture/{link}',
                 'list' => '/pictures',
                 'read' => '/picture/{id}',
+                'update' => '/update-picture/{id}',
                 'delete' => '/delete-picture/{id}',
             ],
             'movie' => [
                 'add' => '/add-movie/{link}',
                 'list' => '/movies',
                 'read' => '/movie/{id}',
+                'update' => '/update-movie/{id}',
                 'delete' => '/delete-movie/{id}',
             ],
         ]);
