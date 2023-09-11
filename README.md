@@ -1,8 +1,5 @@
 # sf_api_bookmark
 API REST de Gestion de Bookmark
 
-liens:
-$link = "https://www.flickr.com/photos/126579629@N06/40770662832/"
-$link = "https://vimeo.com/52323893";   // author null
-$link = "https://vimeo.com/296219988"; // author ok
-$link = "https://www.youtube.com/watch?v=KVKJwb0NRBg";
+J'ai utilisé les "conventionals commits", différentes branches, des fichiers de migration.
+Je n'ai pas mis en place d'outils d'analyse de code tels que PHPStan ou CS Fixer pour le moment sur ce projet. Je l'ai mis en place sur un autre projet en cours que je rends visible pour l'occasion. (coolocasa)
