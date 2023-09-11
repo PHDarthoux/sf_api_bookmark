@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class BookmarkServices
 {
     public function __construct(
-        private EntityManagerInterface $emi,
+        private EntityManagerInterface $entityManager ,
         private BookmarkRepository $bookmarkRepository,
         private PictureServices $pictureServices,
         private MovieServices $movieServices,
@@ -19,9 +19,7 @@ class BookmarkServices
     {
         // For this api I test if the link comes from fickr (only for photos)
         // otherwise I consider it a link to a video
-        strpos($link, 'flickr.com/photos') ? $array = $this->pictureServices->addPicture($link) : $array = $this->movieServices->addMovie($link) ;
-        
-        return $array;
+        return strpos($link, 'flickr.com/photos') ? $this->pictureServices->addPicture($link) : $this->movieServices->addMovie($link) ;
     }
 
 

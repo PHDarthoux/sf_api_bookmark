@@ -12,7 +12,7 @@ use Embed\Embed;
 class PictureServices
 {
     public function __construct(
-        private EntityManagerInterface $emi,
+        private EntityManagerInterface $entityManager ,
         private PictureRepository $pictureRepository,
     ){
     }
@@ -34,9 +34,9 @@ class PictureServices
         $bookmark->setPicture($picture);
 
 
-        $this->emi->persist($picture);
-        $this->emi->persist($bookmark);
-        $this->emi->flush();
+        $this->entityManager->persist($picture);
+        $this->entityManager->persist($bookmark);
+        $this->entityManager->flush();
 
         $array =[
             '200' => 'success',

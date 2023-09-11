@@ -36,9 +36,7 @@ class BookmarkController extends AbstractController
     #[Route('/bookmarks', name: 'list_bookmarks', methods: 'GET')]
     public function allBookmarks(BookmarkServices $bookmarkServices): JsonResponse
     {
-        $array = $bookmarkServices->getAll();
-
-        return $this->json($array);
+        return $this->json($bookmarkServices->getAll());
     }
 
     #[Route('/bookmark/{id}', name: 'read_bookmark', methods: 'GET')]
@@ -54,7 +52,7 @@ class BookmarkController extends AbstractController
     public function deleteOneBookmark(
         Request $request,
         BookmarkRepository $bookmarkRepository,
-        EntityManagerInterface $emi
+        EntityManagerInterface $entityManager 
         ): JsonResponse
     {
         $id = $request->get("id");
@@ -64,8 +62,8 @@ class BookmarkController extends AbstractController
             return $this->json(['404' => "Boomark not found"]);
         } 
 
-        $emi->remove($boomark);
-        $emi->flush();
+        $entityManager ->remove($boomark);
+        $entityManager ->flush();
 
         return $this->json(['Bookmark Deleted' => $boomark->getLink()]);
     }

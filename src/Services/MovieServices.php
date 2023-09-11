@@ -12,7 +12,7 @@ use Embed\Embed;
 class MovieServices
 {
     public function __construct(
-        private EntityManagerInterface $emi,
+        private EntityManagerInterface $entityManager ,
         private MovieRepository $movieRepository,
     ) {
     }
@@ -37,9 +37,9 @@ class MovieServices
         $bookmark->setMovie($movie);
 
 
-        $this->emi->persist($movie);
-        $this->emi->persist($bookmark);
-        $this->emi->flush();
+        $this->entityManager->persist($movie);
+        $this->entityManager->persist($bookmark);
+        $this->entityManager->flush();
 
         $array = [
             '200' => 'success',
