@@ -48,7 +48,7 @@ class BookmarkController extends AbstractController
         return $this->json($datas);
     }
 
-    #[Route('/delete-bookmark/{id}', name: 'delete_bookmark', methods: 'POST')]
+    #[Route('/bookmark/{id}', name: 'delete_bookmark', methods: 'DELETE')]
     public function deleteOneBookmark(
         Request $request,
         BookmarkRepository $bookmarkRepository,
